@@ -1,0 +1,5 @@
+node_modules
+.git
+.idea
+tp
+jenkins_home

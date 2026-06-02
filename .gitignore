@@ -34,3 +34,6 @@ uploads/*jpg
 
 # API tests
 http
+
+# Base de données MongoDB locale
+tp/

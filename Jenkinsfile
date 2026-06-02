@@ -33,8 +33,8 @@ pipeline {
                 echo '===== Deploiement ====='
                 sh '''
                 cd $PROJECT_DIR
-                docker compose down || true
-                docker compose up -d
+                docker-compose down || true
+                docker-compose up -d --build
                 '''
             }
         }
@@ -45,7 +45,7 @@ pipeline {
                 cd $PROJECT_DIR
                 docker ps
                 echo "--- Statut des services Compose ---"
-                docker compose ps
+                docker-compose ps
                 '''
             }
         }
@@ -55,9 +55,9 @@ pipeline {
             echo '================================='
             echo 'PIPELINE EXECUTE AVEC SUCCES'
             echo '================================='
-            echo 'Frontend: http://localhost:3000'
-            echo 'Backend: http://localhost:5000'
-            echo 'MongoDB: localhost:27017'
+            echo 'Frontend : http://localhost:3000'
+            echo 'Backend  : http://localhost:5000'
+            echo 'MongoDB  : localhost:27017'
         }
         failure {
             echo '================================='

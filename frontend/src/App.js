@@ -28,11 +28,12 @@ const App = () => {
       <ToastContainer />
       <Header />
       <main className='py-3'>
-        <Container>
-          <Outlet />
-        </Container>
+          <Container>
+              <h1>CI/CD avec Jenkins</h1>
+              <Outlet/>
+          </Container>
       </main>
-      <Footer />
+        <Footer />
     </>
   );
 };
