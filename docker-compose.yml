@@ -46,11 +46,11 @@ services:
       - proshop-network
 
   prometheus:
-    image: prom/prometheus:latest
+    build:
+      context: ./prometheus
+      dockerfile: Dockerfile
     container_name: proshop-prometheus
     restart: always
-    volumes:
-      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
     ports:
       - "9090:9090"
     networks:
