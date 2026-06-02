@@ -2,7 +2,7 @@ pipeline {
     agent any
     environment {
         PROJECT_DIR = "/workspace/proshop-v2"
-        DOCKER_USER = "Evan"
+        DOCKER_USER = "qevan91"
     }
     stages {
         stage('Informations') {
