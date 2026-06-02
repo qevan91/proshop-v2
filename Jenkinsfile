@@ -2,6 +2,7 @@ pipeline {
     agent any
     environment {
         PROJECT_DIR = "/workspace/proshop-v2"
+        DOCKER_USER = "Evan"
     }
     stages {
         stage('Informations') {
@@ -16,16 +17,39 @@ pipeline {
                 sh 'docker --version && docker ps'
             }
         }
-        stage('Build Backend') {
+        stage('Build & Tag Images') {
             steps {
-                echo '===== Build Backend ====='
-                sh 'cd $PROJECT_DIR && docker build -t proshop-backend:latest -f backend/Dockerfile .'
+                echo '===== Build & Tag du Backend et Frontend ====='
+                sh '''
+                cd $PROJECT_DIR
+                # Build et Tag v1.0 + latest pour le Backend
+                docker build -t proshop-backend:latest -t proshop-backend:v1.0 -f backend/Dockerfile .
+                docker tag proshop-backend:v1.0 $DOCKER_USER/proshop-backend:v1.0
+                docker tag proshop-backend:latest $DOCKER_USER/proshop-backend:latest
+
+                # Build et Tag v1.0 + latest pour le Frontend
+                docker build -t proshop-frontend:latest -t proshop-frontend:v1.0 frontend/
+                docker tag proshop-frontend:v1.0 $DOCKER_USER/proshop-frontend:v1.0
+                docker tag proshop-frontend:latest $DOCKER_USER/proshop-frontend:latest
+                '''
             }
         }
-        stage('Build Frontend') {
+        stage('Push to Registry') {
             steps {
-                echo '===== Build Frontend ====='
-                sh 'cd $PROJECT_DIR && docker build -t proshop-frontend:latest frontend/'
+                echo '===== Connexion et Push vers Docker Hub ====='
+                withCredentials([usernamePassword(credentialsId: 'docker-hub-credentials', usernameVariable: 'USER', passwordVariable: 'PASS')]) {
+                    sh '''
+                    echo $PASS | docker login -u $USER --password-stdin
+
+                    # Push Backend
+                    docker push $DOCKER_USER/proshop-backend:v1.0
+                    docker push $DOCKER_USER/proshop-backend:latest
+
+                    # Push Frontend
+                    docker push $DOCKER_USER/proshop-frontend:v1.0
+                    docker push $DOCKER_USER/proshop-frontend:latest
+                    '''
+                }
             }
         }
         stage('Deploy') {
